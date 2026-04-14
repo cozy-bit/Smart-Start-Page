@@ -4,23 +4,19 @@
 
 @layer base {
   :root {
-    --bg-color: #f8fafc;
+    --bg-color: #f1f5f9; /* Мягкий светлый серый */
     --text-color: #0f172a;
-    --mesh-bg: radial-gradient(at 0% 0%, hsla(210,100%,98%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(220,100%,95%,0.5) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(240,100%,95%,0.5) 0, transparent 50%);
   }
   
   .dark {
-    --bg-color: #090a0f;
+    --bg-color: #090a0f; /* Глубокий черный */
     --text-color: #ffffff;
-    --mesh-bg: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,0.2) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,0.2) 0, transparent 50%);
   }
 
   body {
     background-color: var(--bg-color);
     color: var(--text-color);
-    background-image: var(--mesh-bg);
-    background-attachment: fixed;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 0.5s ease, color 0.5s ease;
     @apply antialiased min-h-screen font-sans;
   }
 }

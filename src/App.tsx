@@ -6,6 +6,7 @@ import Onboarding from './components/Onboarding';
 import WeatherSidebar from './components/WeatherSidebar';
 import CommandPalette from './components/CommandPalette';
 import NotesSidebar from './components/NotesSidebar';
+import AnimatedBackground from './components/AnimatedBackground';
 import { Toaster, toast } from 'sonner';
 import { useUserStore } from './store/useUserStore';
 import { useUIStore } from './store/useUIStore';
@@ -50,6 +51,7 @@ function App() {
 
   return (
     <>
+      <AnimatedBackground />
       <Toaster position="bottom-right" theme={theme === 'dark' ? 'dark' : 'light'} />
       <Onboarding />
       <WeatherSidebar />
