@@ -7,13 +7,15 @@ export interface LinkItem {
   url: string;
   icon?: string;
   group: string;
+  clicks?: number;
 }
 
 interface LinkState {
   links: LinkItem[];
-  addLink: (link: Omit<LinkItem, 'id'>) => void;
+  addLink: (link: Omit<LinkItem, 'id' | 'clicks'>) => void;
   removeLink: (id: string) => void;
   editLink: (id: string, updatedLink: Partial<LinkItem>) => void;
+  incrementClick: (id: string) => void;
 }
 
 const defaultLinks: LinkItem[] = [
@@ -28,7 +30,7 @@ export const useLinkStore = create<LinkState>()(
       links: defaultLinks,
       addLink: (link) =>
         set((state) => ({
-          links: [...state.links, { ...link, id: crypto.randomUUID() }],
+          links: [...state.links, { ...link, id: crypto.randomUUID(), clicks: 0 }],
         })),
       removeLink: (id) =>
         set((state) => ({
@@ -38,6 +40,12 @@ export const useLinkStore = create<LinkState>()(
         set((state) => ({
           links: state.links.map((l) =>
             l.id === id ? { ...l, ...updatedLink } : l
+          ),
+        })),
+      incrementClick: (id) =>
+        set((state) => ({
+          links: state.links.map((l) => 
+            l.id === id ? { ...l, clicks: (l.clicks || 0) + 1 } : l
           ),
         })),
     }),
