@@ -46,7 +46,7 @@ export default function GreetingWidget() {
       transition={{ duration: 0.8 }}
       className="flex flex-col items-center justify-center text-center space-y-2 mt-8 mb-6 md:my-12"
     >
-      <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 dark:from-white dark:via-white/90 dark:to-white/40 drop-shadow-sm select-none">
+      <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 dark:from-white dark:via-white/90 dark:to-white/40 drop-shadow-sm select-none pr-2">
         {formatTime(now)}
       </h1>
       <p className="text-lg md:text-2xl text-gray-500 dark:text-white/60 font-medium tracking-wide transition-colors">

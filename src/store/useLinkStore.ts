@@ -8,14 +8,17 @@ export interface LinkItem {
   icon?: string;
   group: string;
   clicks?: number;
+  isPinned?: boolean;
 }
 
 interface LinkState {
   links: LinkItem[];
-  addLink: (link: Omit<LinkItem, 'id' | 'clicks'>) => void;
+  addLink: (link: Omit<LinkItem, 'id' | 'clicks' | 'isPinned'>) => void;
   removeLink: (id: string) => void;
   editLink: (id: string, updatedLink: Partial<LinkItem>) => void;
   incrementClick: (id: string) => void;
+  togglePin: (id: string) => void;
+  restoreLink: (link: LinkItem) => void;
 }
 
 const defaultLinks: LinkItem[] = [
@@ -30,7 +33,7 @@ export const useLinkStore = create<LinkState>()(
       links: defaultLinks,
       addLink: (link) =>
         set((state) => ({
-          links: [...state.links, { ...link, id: crypto.randomUUID(), clicks: 0 }],
+          links: [...state.links, { ...link, id: crypto.randomUUID(), clicks: 0, isPinned: false }],
         })),
       removeLink: (id) =>
         set((state) => ({
@@ -47,6 +50,16 @@ export const useLinkStore = create<LinkState>()(
           links: state.links.map((l) => 
             l.id === id ? { ...l, clicks: (l.clicks || 0) + 1 } : l
           ),
+        })),
+      togglePin: (id) =>
+        set((state) => ({
+          links: state.links.map((l) =>
+            l.id === id ? { ...l, isPinned: !l.isPinned } : l
+          ),
+        })),
+      restoreLink: (link) =>
+        set((state) => ({
+          links: [...state.links, link],
         })),
     }),
     {

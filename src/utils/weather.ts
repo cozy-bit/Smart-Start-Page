@@ -25,6 +25,16 @@ export async function fetchWeather(lat: number, lon: number): Promise<WeatherDat
   if (!res.ok) throw new Error('Failed to fetch weather');
   const data = await res.json();
   
+  const nowMs = Date.now();
+  let startIndex = 0;
+  for (let i = 0; i < data.hourly.time.length; i++) {
+    const timeMs = new Date(data.hourly.time[i]).getTime();
+    if (timeMs >= nowMs - 3600000) {
+      startIndex = i;
+      break;
+    }
+  }
+
   return {
     current: {
       temperature: data.current.temperature_2m,
@@ -34,9 +44,9 @@ export async function fetchWeather(lat: number, lon: number): Promise<WeatherDat
       feelsLike: data.current.apparent_temperature,
     },
     hourly: {
-      time: data.hourly.time.slice(0, 24),
-      temperature: data.hourly.temperature_2m.slice(0, 24),
-      weatherCode: data.hourly.weather_code.slice(0, 24),
+      time: data.hourly.time.slice(startIndex, startIndex + 24),
+      temperature: data.hourly.temperature_2m.slice(startIndex, startIndex + 24),
+      weatherCode: data.hourly.weather_code.slice(startIndex, startIndex + 24),
     },
     daily: {
       time: data.daily.time,

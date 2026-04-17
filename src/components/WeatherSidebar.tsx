@@ -53,7 +53,7 @@ export default function WeatherSidebar() {
 
   if (isLoading && !data) {
     return (
-      <div className="fixed top-4 left-4 md:top-1/2 md:left-2 md:-translate-y-1/2 z-40 flex items-center">
+      <div className="fixed top-4 left-4 md:top-1/2 md:left-2 md:-translate-y-1/2 z-[60] flex items-center">
         <div className="glass-panel flex items-center justify-center p-3 md:p-4 md:py-6 shadow-xl">
            <Loader2 className="w-6 h-6 animate-spin text-gray-400 dark:text-white/50" />
         </div>
@@ -64,7 +64,7 @@ export default function WeatherSidebar() {
   if (!data) return null;
 
   return (
-    <div ref={sidebarRef} className="fixed top-4 left-4 md:top-1/2 md:left-2 md:-translate-y-1/2 z-40 flex items-center">
+    <div ref={sidebarRef} className="fixed top-4 left-4 md:top-1/2 md:left-2 md:-translate-y-1/2 z-[60] flex items-center">
       <AnimatePresence initial={false}>
         {!expanded ? (
           <motion.button

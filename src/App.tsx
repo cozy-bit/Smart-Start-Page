@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import GreetingWidget from './components/GreetingWidget';
+import DailyFocus from './components/DailyFocus';
 import SearchBar from './components/SearchBar';
 import QuickLinks from './components/QuickLinks';
 import Onboarding from './components/Onboarding';
@@ -7,15 +8,18 @@ import WeatherSidebar from './components/WeatherSidebar';
 import CommandPalette from './components/CommandPalette';
 import NotesSidebar from './components/NotesSidebar';
 import AnimatedBackground from './components/AnimatedBackground';
+import SettingsModal from './components/SettingsModal';
 import { Toaster, toast } from 'sonner';
 import { useUserStore } from './store/useUserStore';
 import { useUIStore } from './store/useUIStore';
-import { Palette, Search, FileText, Plus } from 'lucide-react';
+import { useSettingsStore } from './store/useSettingsStore';
+import { Palette, Search, FileText, Plus, Settings } from 'lucide-react';
 
 function App() {
   const theme = useUserStore((s) => s.theme);
   const setTheme = useUserStore((s) => s.setTheme);
-  const { setAddLinkOpen, setNotesOpen } = useUIStore();
+  const { setAddLinkOpen, setNotesOpen, setSettingsOpen } = useUIStore();
+  const { enableWeather, enableNotes } = useSettingsStore();
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -46,7 +50,7 @@ function App() {
   };
 
   const openCommandPalette = () => {
-    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }));
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', code: 'KeyK', metaKey: true } as KeyboardEventInit));
   };
 
   return (
@@ -54,9 +58,10 @@ function App() {
       <AnimatedBackground />
       <Toaster position="bottom-right" theme={theme === 'dark' ? 'dark' : 'light'} />
       <Onboarding />
-      <WeatherSidebar />
+      {enableWeather && <WeatherSidebar />}
       <CommandPalette />
-      <NotesSidebar />
+      {enableNotes && <NotesSidebar />}
+      <SettingsModal />
 
       {/* Mobile/Global header buttons */}
       <div className="fixed top-4 right-4 z-50 flex items-center space-x-2">
@@ -67,19 +72,28 @@ function App() {
         >
           <Plus className="w-5 h-5" />
         </button>
-        <button 
-          onClick={() => setNotesOpen(true)}
-          className="p-2.5 bg-black/10 dark:bg-white/5 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full text-yellow-600 dark:text-yellow-400/80 hover:text-yellow-700 dark:hover:text-yellow-400 transition-all shadow-lg"
-          title="Quick Notes"
-        >
-          <FileText className="w-5 h-5" />
-        </button>
+        {enableNotes && (
+          <button 
+            onClick={() => setNotesOpen(true)}
+            className="p-2.5 bg-black/10 dark:bg-white/5 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full text-yellow-600 dark:text-yellow-400/80 hover:text-yellow-700 dark:hover:text-yellow-400 transition-all shadow-lg"
+            title="Quick Notes"
+          >
+            <FileText className="w-5 h-5" />
+          </button>
+        )}
         <button 
           onClick={openCommandPalette}
           className="p-2.5 bg-black/10 dark:bg-white/5 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full text-gray-700 dark:text-white/70 hover:text-black dark:hover:text-white transition-all shadow-lg"
           title="Open Command Palette"
         >
           <Search className="w-5 h-5" />
+        </button>
+        <button 
+          onClick={() => setSettingsOpen(true)}
+          className="p-2.5 bg-black/10 dark:bg-white/5 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full text-gray-700 dark:text-white/70 hover:text-black dark:hover:text-white transition-all shadow-lg"
+          title="Settings & History"
+        >
+          <Settings className="w-5 h-5" />
         </button>
         <button 
           onClick={toggleTheme}
@@ -90,10 +104,11 @@ function App() {
         </button>
       </div>
 
-      <div className="container mx-auto px-4 py-8 md:py-16 max-w-6xl flex flex-col min-h-screen relative z-10">
+      <div className="container mx-auto px-4 pt-24 pb-8 md:pt-16 md:pb-16 max-w-6xl flex flex-col min-h-screen relative z-10">
         <main className="flex-grow flex flex-col justify-center items-center">
           <div className="w-full">
             <GreetingWidget />
+            <DailyFocus />
             <SearchBar />
             <QuickLinks />
           </div>

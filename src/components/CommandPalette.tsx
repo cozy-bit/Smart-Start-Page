@@ -29,7 +29,8 @@ export default function CommandPalette() {
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       // Ctrl+K or Cmd+K
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      const isK = e.key.toLowerCase() === 'k' || e.code === 'KeyK';
+      if ((e.ctrlKey || e.metaKey) && isK) {
         e.preventDefault();
         setIsOpen((prev) => !prev);
       }
