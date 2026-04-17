@@ -171,7 +171,7 @@ export default function CommandPalette() {
               )}
             </div>
             
-            <div className="border-t border-white/5 p-3 flex items-center justify-between text-xs text-white/30 bg-black/20">
+            <div className="border-t border-white/5 p-3 hidden sm:flex items-center justify-between text-xs text-white/30 bg-black/20">
               <div className="flex items-center space-x-4">
                 <span className="flex items-center space-x-1"><span>↑↓</span> <span>to navigate</span></span>
                 <span className="flex items-center space-x-1"><span>↵</span> <span>to execute</span></span>

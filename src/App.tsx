@@ -72,22 +72,6 @@ function App() {
         >
           <Plus className="w-5 h-5" />
         </button>
-        {enableNotes && (
-          <button 
-            onClick={() => setNotesOpen(true)}
-            className="p-2.5 bg-black/10 dark:bg-white/5 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full text-yellow-600 dark:text-yellow-400/80 hover:text-yellow-700 dark:hover:text-yellow-400 transition-all shadow-lg"
-            title="Quick Notes"
-          >
-            <FileText className="w-5 h-5" />
-          </button>
-        )}
-        <button 
-          onClick={openCommandPalette}
-          className="p-2.5 bg-black/10 dark:bg-white/5 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full text-gray-700 dark:text-white/70 hover:text-black dark:hover:text-white transition-all shadow-lg"
-          title="Open Command Palette"
-        >
-          <Search className="w-5 h-5" />
-        </button>
         <button 
           onClick={() => setSettingsOpen(true)}
           className="p-2.5 bg-black/10 dark:bg-white/5 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-full text-gray-700 dark:text-white/70 hover:text-black dark:hover:text-white transition-all shadow-lg"

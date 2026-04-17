@@ -16,10 +16,11 @@ const engineConfig = {
 };
 
 export default function SearchBar() {
-  const [isFocused, setIsFocused] = useState(false);
   const [query, setQuery] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const [engineIndex, setEngineIndex] = useState(0);
   const [dropdownIndex, setDropdownIndex] = useState(0);
+  const [dropdownForceOpen, setDropdownForceOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { isSpotlight, setSpotlight } = useUIStore();
   const { addHistory } = useHistoryStore();
@@ -60,7 +61,7 @@ export default function SearchBar() {
   }, [isSpotlight, setSpotlight]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    const isAutocompleteOpen = (isFocused || isSpotlight) && (query.startsWith('/') || query.startsWith('.'));
+    const isAutocompleteOpen = (isFocused || isSpotlight) && (query.startsWith('/') || query.startsWith('.') || dropdownForceOpen);
 
     if (e.key === 'Escape') {
       setQuery('');
@@ -161,16 +162,22 @@ export default function SearchBar() {
             {/* Engine Indicator */}
             <AnimatePresence>
               {(isFocused || isSpotlight) && (
-                <motion.div 
+                <motion.button 
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setDropdownForceOpen((v) => !v);
+                    inputRef.current?.focus();
+                  }}
                   initial={{ opacity: 0, width: 0, scale: 0.8, overflow: 'hidden' }} 
                   animate={{ opacity: 1, width: 'auto', scale: 1, transitionEnd: { overflow: 'visible' } }}
                   exit={{ opacity: 0, width: 0, scale: 0.8, overflow: 'hidden' }}
-                  className="whitespace-nowrap pl-3 pr-1 py-1 flex items-center flex-shrink-0"
+                  className="whitespace-nowrap pl-3 pr-1 py-1 flex items-center flex-shrink-0 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 rounded-2xl transition-colors"
                 >
-                  <span className="px-2.5 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider bg-black/5 dark:bg-white/10 text-gray-600 dark:text-white/60 block">
+                  <span className="px-2.5 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider bg-black/5 dark:bg-white/10 text-gray-600 dark:text-white/60 block pointer-events-none">
                     {currentEngine}
                   </span>
-                </motion.div>
+                </motion.button>
               )}
             </AnimatePresence>
 
@@ -178,12 +185,18 @@ export default function SearchBar() {
               ref={inputRef}
               type="text"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                if (dropdownForceOpen) setDropdownForceOpen(false);
+              }}
               onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
+              onBlur={() => {
+                setIsFocused(false);
+                setDropdownForceOpen(false);
+              }}
               onKeyDown={handleKeyDown}
-              placeholder={isSpotlight ? "Search... (Tab to switch engine)" : engineConfig[currentEngine].placeholder}
-              className="w-full bg-transparent border-none px-4 text-xl text-gray-900 dark:text-white focus:outline-none focus:ring-0 placeholder-gray-400 dark:placeholder-white/30 transition-colors"
+              placeholder={isSpotlight ? "Search..." : engineConfig[currentEngine].placeholder}
+              className="w-full bg-transparent border-none px-4 text-sm sm:text-xl text-gray-900 dark:text-white focus:outline-none focus:ring-0 placeholder-gray-400 dark:placeholder-white/30 transition-colors"
             />
             
             <AnimatePresence>
@@ -209,7 +222,7 @@ export default function SearchBar() {
           
           {/* Autocomplete Dropdown for Prefixes */}
           <AnimatePresence>
-            {(isFocused || isSpotlight) && (query.startsWith('/') || query.startsWith('.')) && (
+            {(isFocused || isSpotlight) && (query.startsWith('/') || query.startsWith('.') || dropdownForceOpen) && (
                <motion.div
                  initial={{ opacity: 0, y: 10 }}
                  animate={{ opacity: 1, y: 0 }}
@@ -232,6 +245,7 @@ export default function SearchBar() {
                        onClick={() => {
                          setEngineIndex(idx);
                          setQuery('');
+                         setDropdownForceOpen(false);
                          inputRef.current?.focus();
                        }}
                        className={`w-full flex items-center px-6 py-3 hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${isActiveItem ? 'bg-primary/10 dark:bg-primary/20' : ''}`}
@@ -251,7 +265,7 @@ export default function SearchBar() {
           <motion.div 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
-            className="absolute top-full left-0 right-0 mt-6 text-center text-gray-500 dark:text-white/70 text-sm font-medium"
+            className="absolute top-full left-0 right-0 mt-6 text-center text-gray-500 dark:text-white/70 text-sm font-medium hidden sm:block"
           >
             Нажмите <kbd className="mx-1 px-2 py-1 bg-black/10 dark:bg-white/10 rounded-md shadow-sm font-mono text-xs">Tab</kbd> чтобы сменить поисковик. <kbd className="mx-1 px-2 py-1 bg-black/10 dark:bg-white/10 rounded-md shadow-sm font-mono text-xs">Esc</kbd> чтобы выйти.
           </motion.div>

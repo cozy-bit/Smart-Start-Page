@@ -170,15 +170,16 @@ export default function QuickLinks() {
           <MoreHorizontal className="w-4 h-4 pointer-events-none" />
         </button>
 
-        {/* Custom Context Menu */}
+        {/* Desktop Context Menu */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
+              key="desktop-menu"
               ref={menuRef}
               initial={{ opacity: 0, scale: 0.95, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10, transition: { duration: 0.15 } }}
-              className="absolute top-10 right-2 z-50 min-w-[150px] bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden text-sm"
+              className="hidden sm:block absolute top-10 right-2 z-[60] min-w-[150px] bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden text-sm"
             >
               <div className="flex flex-col py-1 pointer-events-auto">
                 <button 
@@ -257,9 +258,60 @@ export default function QuickLinks() {
         ))}
       </div>
 
+      {/* Mobile Bottom Sheet Action Menu */}
+      <AnimatePresence>
+        {activeMenuId && (
+          <motion.div 
+            key="mobile-bottom-sheet"
+            className="sm:hidden fixed inset-0 z-[200] flex items-end justify-center p-4"
+          >
+             <motion.div 
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                className="absolute inset-0 bg-black/40 backdrop-blur-sm" 
+                onClick={(e) => { e.stopPropagation(); setActiveMenuId(null); }} 
+             />
+             <motion.div
+               initial={{ opacity: 0, y: 50, scale: 0.95 }}
+               animate={{ opacity: 1, y: 0, scale: 1 }}
+               exit={{ opacity: 0, y: 50, scale: 0.95, transition: { duration: 0.2 } }}
+               className="relative z-10 w-full max-w-sm bg-white dark:bg-[#1c1d25] rounded-[2rem] shadow-2xl p-2 pb-6 border border-black/5 dark:border-white/10"
+             >
+               <div className="w-12 h-1.5 bg-gray-200 dark:bg-white/20 rounded-full mx-auto my-3" />
+               <div className="text-center font-bold text-gray-500 text-sm mb-4">
+                 {links.find(l => l.id === activeMenuId)?.title}
+               </div>
+               <div className="flex flex-col space-y-2 px-4">
+                  <button 
+                    onClick={(e) => { const l = links.find(ln=>ln.id===activeMenuId); if(l) handleOpenEdit(e, l); }}
+                    className="flex items-center justify-center space-x-3 px-4 py-4 rounded-xl bg-gray-100 dark:bg-white/5 active:bg-gray-200 dark:active:bg-white/10 text-gray-800 dark:text-gray-100 transition-colors w-full text-lg font-medium"
+                  >
+                    <Edit2 className="w-5 h-5 opacity-70" />
+                    <span>Edit Link</span>
+                  </button>
+                  <button 
+                    onClick={(e) => { const l = links.find(ln=>ln.id===activeMenuId); if(l) handleTogglePin(e, l); }}
+                    className="flex items-center justify-center space-x-3 px-4 py-4 rounded-xl bg-gray-100 dark:bg-white/5 active:bg-gray-200 dark:active:bg-white/10 text-gray-800 dark:text-gray-100 transition-colors w-full text-lg font-medium"
+                  >
+                    <Star className={`w-5 h-5 ${links.find(l=>l.id===activeMenuId)?.isPinned ? 'fill-yellow-400 text-yellow-400' : 'opacity-70'}`} />
+                    <span>{links.find(l=>l.id===activeMenuId)?.isPinned ? 'Unpin' : 'Pin to Favorites'}</span>
+                  </button>
+                  <button 
+                    onClick={(e) => { const l = links.find(ln=>ln.id===activeMenuId); if(l) handleDelete(e, l); }}
+                    className="flex items-center justify-center space-x-3 px-4 py-4 rounded-xl bg-red-100 dark:bg-red-500/20 active:bg-red-200 text-red-600 dark:text-red-400 transition-colors w-full text-lg font-medium mt-2"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                    <span>Delete</span>
+                  </button>
+               </div>
+             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {isModalOpen && (
           <motion.div
+            key="add-link-modal"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
