@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore } from '../store/useUIStore';
 import { useHistoryStore } from '../store/useHistoryStore';
 import { useSettingsStore } from '../store/useSettingsStore';
+import { useTranslation } from '../i18n';
 
 type Engine = 'google' | 'youtube' | 'github';
 const ENGINES: Engine[] = ['google', 'youtube', 'github'];
@@ -25,6 +26,7 @@ export default function SearchBar() {
   const { isSpotlight, setSpotlight } = useUIStore();
   const { addHistory } = useHistoryStore();
   const enableHistory = useSettingsStore((s) => s.enableHistory);
+  const t = useTranslation();
 
   const currentEngine = ENGINES[engineIndex];
   const ActiveIcon = engineConfig[currentEngine].icon;
@@ -195,7 +197,7 @@ export default function SearchBar() {
                 setDropdownForceOpen(false);
               }}
               onKeyDown={handleKeyDown}
-              placeholder={isSpotlight ? "Search..." : engineConfig[currentEngine].placeholder}
+              placeholder={isSpotlight ? t("Search...") : t(engineConfig[currentEngine].placeholder)}
               className="w-full bg-transparent border-none px-4 text-sm sm:text-xl text-gray-900 dark:text-white focus:outline-none focus:ring-0 placeholder-gray-400 dark:placeholder-white/30 transition-colors"
             />
             
@@ -229,7 +231,7 @@ export default function SearchBar() {
                  exit={{ opacity: 0, y: 10 }}
                  className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-gray-900 border border-black/10 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden py-2"
                >
-                 <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-widest">Select Search Engine</div>
+                 <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-widest">{t('Select Search Engine')}</div>
                  {ENGINES.map((eng, idx) => {
                    const conf = engineConfig[eng];
                    const Icon = conf.icon;
@@ -251,7 +253,7 @@ export default function SearchBar() {
                        className={`w-full flex items-center px-6 py-3 hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${isActiveItem ? 'bg-primary/10 dark:bg-primary/20' : ''}`}
                      >
                        <Icon className={`w-5 h-5 mr-3 ${conf.color}`} />
-                       <span className="flex-1 text-left text-gray-800 dark:text-gray-100 font-medium">Search with {eng}</span>
+                       <span className="flex-1 text-left text-gray-800 dark:text-gray-100 font-medium">{t('Search with')} {eng}</span>
                        <span className="text-gray-400 dark:text-gray-500 font-mono text-sm bg-black/5 dark:bg-white/5 px-2 py-1 rounded-md">{conf.hint} <span className="opacity-40">/</span> {conf.ruHint}</span>
                      </button>
                    );

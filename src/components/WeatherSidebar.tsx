@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchWeather, getWeatherIcon, formatHour, formatDay, WeatherData } from '../utils/weather';
 import { useUserStore } from '../store/useUserStore';
+import { useSettingsStore } from '../store/useSettingsStore';
+import { useTranslation } from '../i18n';
 import { Loader2 } from 'lucide-react';
 
 export default function WeatherSidebar() {
@@ -9,6 +11,8 @@ export default function WeatherSidebar() {
   const [data, setData] = useState<WeatherData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { location, setLocation } = useUserStore();
+  const language = useSettingsStore(s => s.language) || 'ru';
+  const t = useTranslation();
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   // default to Dushanbe
@@ -76,10 +80,10 @@ export default function WeatherSidebar() {
             className="glass-panel flex md:flex-col items-center justify-center p-3 md:p-4 md:py-6 space-x-2 md:space-x-0 md:space-y-3 cursor-pointer shadow-xl hover:shadow-primary/20"
           >
             <span className="hidden md:block text-sm font-semibold text-gray-500 dark:text-white/50 tracking-wider [writing-mode:vertical-lr] rotate-180">
-              {location?.city || 'Weather'}
+              {location?.city || t('Weather')}
             </span>
             <span className="block md:hidden text-sm font-semibold text-gray-500 dark:text-white/50 pl-1">
-              {location?.city || 'Weather'}
+              {location?.city || t('Weather')}
             </span>
             <span className="text-3xl">{getWeatherIcon(data.current.weatherCode)}</span>
             <span className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{Math.round(data.current.temperature)}°</span>
@@ -95,7 +99,7 @@ export default function WeatherSidebar() {
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{location?.city || 'Local'}</h2>
-                  <p className="text-gray-500 dark:text-white/60">Current Weather</p>
+                  <p className="text-gray-500 dark:text-white/60">{t('Current Weather')}</p>
                 </div>
                 <button onClick={() => setExpanded(false)} className="text-gray-400 dark:text-white/40 hover:text-gray-900 dark:hover:text-white p-1">
                   ✕
@@ -107,7 +111,7 @@ export default function WeatherSidebar() {
                   <span className="text-5xl">{getWeatherIcon(data.current.weatherCode)}</span>
                   <div>
                     <div className="text-4xl font-bold text-gray-900 dark:text-white">{Math.round(data.current.temperature)}°</div>
-                    <div className="text-gray-500 dark:text-white/60 text-sm mt-1">Feels like {Math.round(data.current.feelsLike)}°</div>
+                    <div className="text-gray-500 dark:text-white/60 text-sm mt-1">{t('Feels like')} {Math.round(data.current.feelsLike)}°</div>
                   </div>
                 </div>
                 <div className="text-right text-sm text-gray-600 dark:text-white/70 space-y-1">
@@ -119,11 +123,11 @@ export default function WeatherSidebar() {
 
             <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-6 custom-scrollbar min-w-[340px]">
               <div>
-                <h3 className="text-sm font-semibold text-gray-400 dark:text-white/40 uppercase tracking-widest mb-3">Today</h3>
+                <h3 className="text-sm font-semibold text-gray-400 dark:text-white/40 uppercase tracking-widest mb-3">{t('TODAY')}</h3>
                 <div className="flex space-x-3 overflow-x-auto pb-2 custom-scrollbar">
                   {data.hourly.time.slice(0, 12).map((time, i) => (
                     <div key={i} className="flex flex-col items-center bg-black/5 dark:bg-white/5 rounded-xl p-3 min-w-[60px]">
-                      <span className="text-xs text-gray-500 dark:text-white/60 mb-2">{formatHour(time)}</span>
+                      <span className="text-xs text-gray-500 dark:text-white/60 mb-2">{formatHour(time, language)}</span>
                       <span className="text-2xl mb-1">{getWeatherIcon(data.hourly.weatherCode[i])}</span>
                       <span className="font-semibold text-gray-900 dark:text-white">{Math.round(data.hourly.temperature[i])}°</span>
                     </div>
@@ -132,11 +136,11 @@ export default function WeatherSidebar() {
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold text-gray-400 dark:text-white/40 uppercase tracking-widest mb-3">7-Day Forecast</h3>
+                <h3 className="text-sm font-semibold text-gray-400 dark:text-white/40 uppercase tracking-widest mb-3">{t('7-DAY FORECAST')}</h3>
                 <div className="space-y-2">
                   {data.daily.time.map((time, i) => (
                     <div key={i} className="flex items-center justify-between text-sm p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-                      <span className="w-12 font-medium text-gray-600 dark:text-white/80">{i === 0 ? 'Today' : formatDay(time)}</span>
+                      <span className="w-12 font-medium text-gray-600 dark:text-white/80">{i === 0 ? t('Today') : formatDay(time, language)}</span>
                       <span className="text-xl">{getWeatherIcon(data.daily.weatherCode[i])}</span>
                       <div className="flex space-x-3 w-20 justify-end font-medium">
                         <span className="text-gray-400 dark:text-white/50">{Math.round(data.daily.temperatureMin[i])}°</span>

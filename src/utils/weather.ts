@@ -71,13 +71,14 @@ export function getWeatherIcon(code: number): string {
   return '☁️';
 }
 
-export function formatHour(timeStr: string): string {
+export function formatHour(timeStr: string, lang: 'en' | 'ru' = 'en'): string {
   const date = new Date(timeStr);
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleTimeString(lang === 'ru' ? 'ru-RU' : 'en-US', { hour: '2-digit', minute: '2-digit' });
 }
 
-export function formatDay(timeStr: string): string {
+export function formatDay(timeStr: string, lang: 'en' | 'ru' = 'en'): string {
   const date = new Date(timeStr);
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  return days[date.getDay()];
+  const formatter = new Intl.DateTimeFormat(lang === 'ru' ? 'ru' : 'en-US', { weekday: 'short' });
+  const text = formatter.format(date);
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }

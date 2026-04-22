@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
+import { enUS, ru } from 'date-fns/locale';
 
 export function getGreeting(date: Date): { text: string; icon: string } {
   const hour = date.getHours();
@@ -18,7 +19,10 @@ export function formatTime(date: Date): string {
   return format(date, 'HH:mm');
 }
 
-export function formatDate(date: Date): string {
-  // Monday, April 14
-  return format(date, 'EEEE, MMMM do');
+export function formatDate(date: Date, lang: 'en' | 'ru' = 'ru'): string {
+  if (lang === 'ru') {
+    const formatted = format(date, 'EEEE, d MMMM', { locale: ru });
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+  }
+  return format(date, 'EEEE, MMMM do', { locale: enUS });
 }

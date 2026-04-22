@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { getGreeting, formatTime, formatDate } from '../utils/time';
 import { useUserStore } from '../store/useUserStore';
+import { useSettingsStore } from '../store/useSettingsStore';
 import { Edit2 } from 'lucide-react';
+import { useTranslation } from '../i18n';
 
 export default function GreetingWidget() {
   const [now, setNow] = useState(new Date());
   const { firstName, setFirstName } = useUserStore();
+  const language = useSettingsStore(s => s.language) || 'ru';
+  const t = useTranslation();
   
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
@@ -50,7 +54,7 @@ export default function GreetingWidget() {
         {formatTime(now)}
       </h1>
       <p className="text-lg md:text-2xl text-gray-500 dark:text-white/60 font-medium tracking-wide transition-colors">
-        {formatDate(now)}
+        {formatDate(now, language)}
       </p>
       {firstName && (
         <motion.div 
@@ -62,7 +66,7 @@ export default function GreetingWidget() {
           <span className="text-xl md:text-2xl" role="img" aria-label="greeting icon">{greeting.icon}</span>
           
           <div className="flex items-center text-lg md:text-xl font-medium text-gray-700 dark:text-white/90 transition-colors">
-            <span>{greeting.text},</span>
+            <span>{t(greeting.text)},</span>
             {isEditing ? (
               <form onSubmit={handleSaveName} className="ml-2 w-auto max-w-[150px]">
                 <input

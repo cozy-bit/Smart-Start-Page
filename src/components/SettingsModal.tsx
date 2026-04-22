@@ -1,15 +1,17 @@
-import { X, Settings, Clock, Link as LinkIcon, Search, Trash2 } from 'lucide-react';
+import { X, Settings, Clock, Link as LinkIcon, Search, Trash2, Palette } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore } from '../store/useUIStore';
 import { useSettingsStore } from '../store/useSettingsStore';
 import { useHistoryStore } from '../store/useHistoryStore';
+import { useTranslation } from '../i18n';
 import { useState } from 'react';
 
 export default function SettingsModal() {
   const { isSettingsOpen, setSettingsOpen } = useUIStore();
-  const { enableWeather, enableNotes, enableHistory, toggleSetting } = useSettingsStore();
+  const { enableWeather, enableNotes, enableHistory, enableEcoMode, fontFamily, customWallpaper, language, toggleSetting, setStringSetting } = useSettingsStore();
   const { history, clearHistory } = useHistoryStore();
-  const [activeTab, setActiveTab] = useState<'settings' | 'history'>('settings');
+  const [activeTab, setActiveTab] = useState<'settings' | 'history' | 'appearance'>('settings');
+  const t = useTranslation();
 
   if (!isSettingsOpen) return null;
 
@@ -39,7 +41,16 @@ export default function SettingsModal() {
                 }`}
               >
                 <Settings className="w-5 h-5" />
-                <span>Settings</span>
+                <span>{t('Settings')}</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('appearance')}
+                className={`flex items-center space-x-2 text-lg font-semibold transition-colors ${
+                  activeTab === 'appearance' ? 'text-primary' : 'text-gray-400 hover:text-gray-600 dark:hover:text-white/80'
+                }`}
+              >
+                <Palette className="w-5 h-5" />
+                <span>{t('Appearance')}</span>
               </button>
               <button
                 onClick={() => setActiveTab('history')}
@@ -48,7 +59,7 @@ export default function SettingsModal() {
                 }`}
               >
                 <Clock className="w-5 h-5" />
-                <span>History</span>
+                <span>{t('History')}</span>
               </button>
             </div>
             <button 
@@ -64,42 +75,89 @@ export default function SettingsModal() {
             {activeTab === 'settings' ? (
               <div className="space-y-6">
                 <ToggleItem 
-                  label="Weather Sidebar" 
-                  description="Show daily and weekly forecast widget."
+                  label={t('Weather Sidebar')} 
+                  description={t('Show daily and weekly forecast widget.')}
                   active={enableWeather}
                   onChange={() => toggleSetting('enableWeather')}
                 />
                 <ToggleItem 
-                  label="Quick Notes Sidebar" 
-                  description="Show scratchpad for temporary notes."
+                  label={t('Quick Notes Sidebar')} 
+                  description={t('Show scratchpad for temporary notes.')}
                   active={enableNotes}
                   onChange={() => toggleSetting('enableNotes')}
                 />
                 <ToggleItem 
-                  label="Track Action History" 
-                  description="Keep a local log of recent searches and link clicks."
+                  label={t('Track Action History')} 
+                  description={t('Keep a local log of recent searches and link clicks.')}
                   active={enableHistory}
                   onChange={() => toggleSetting('enableHistory')}
                 />
               </div>
+            ) : activeTab === 'appearance' ? (
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <label className="block text-sm font-semibold text-gray-900 dark:text-white">{t('Language')}</label>
+                  <select 
+                    value={language}
+                    onChange={(e) => setStringSetting('language', e.target.value)}
+                    className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium appearance-none"
+                  >
+                    <option value="ru" className="dark:bg-gray-800">Русский</option>
+                    <option value="en" className="dark:bg-gray-800">English</option>
+                  </select>
+                </div>
+
+                <ToggleItem 
+                  label={t('Eco Mode')} 
+                  description={t('Disable heavy animations and blurs to save battery and increase performance.')}
+                  active={enableEcoMode}
+                  onChange={() => toggleSetting('enableEcoMode')}
+                />
+                
+                <div className="space-y-3">
+                  <label className="block text-sm font-semibold text-gray-900 dark:text-white">{t('Font Family')}</label>
+                  <select 
+                    value={fontFamily}
+                    onChange={(e) => setStringSetting('fontFamily', e.target.value)}
+                    className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-primary/50 transition-all font-medium appearance-none"
+                  >
+                    <option value="Inter" className="dark:bg-gray-800">Inter (Default)</option>
+                    <option value="JetBrains Mono" className="dark:bg-gray-800">JetBrains Mono</option>
+                    <option value="Outfit" className="dark:bg-gray-800">Outfit</option>
+                    <option value="Space Grotesk" className="dark:bg-gray-800">Space Grotesk</option>
+                  </select>
+                </div>
+
+                <div className="space-y-3">
+                  <label className="block text-sm font-semibold text-gray-900 dark:text-white">{t('Custom Wallpaper URL')}</label>
+                  <input 
+                    type="text" 
+                    placeholder="https://images.unsplash.com/..."
+                    value={customWallpaper}
+                    onChange={(e) => setStringSetting('customWallpaper', e.target.value)}
+                    className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('Leave empty to use the dynamic Aurora background.')}</p>
+                </div>
+              </div>
             ) : (
               <div className="space-y-4">
                 <div className="flex justify-between items-center mb-6">
-                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Recent Actions</span>
+                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('Recent Actions')}</span>
                   {history.length > 0 && (
                     <button 
                       onClick={clearHistory}
                       className="text-xs flex items-center space-x-1 text-red-500 hover:text-red-600 bg-red-50 dark:bg-red-500/10 px-3 py-1.5 rounded-full transition-colors"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
-                      <span>Clear all</span>
+                      <span>{t('Clear all')}</span>
                     </button>
                   )}
                 </div>
 
                 {history.length === 0 ? (
                   <div className="text-center py-12 text-gray-400 dark:text-gray-500">
-                    No history recorded yet.
+                    {t('No history recorded yet.')}
                   </div>
                 ) : (
                   <div className="space-y-3">

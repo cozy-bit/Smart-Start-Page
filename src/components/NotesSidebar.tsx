@@ -2,11 +2,13 @@ import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore } from '../store/useUIStore';
 import { useNoteStore } from '../store/useNoteStore';
+import { useTranslation } from '../i18n';
 import { FileText, X } from 'lucide-react';
 
 export default function NotesSidebar() {
   const { isNotesOpen, setNotesOpen } = useUIStore();
   const { noteContent, setNoteContent } = useNoteStore();
+  const t = useTranslation();
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,10 +38,10 @@ export default function NotesSidebar() {
           >
             <FileText className="w-6 h-6 text-yellow-500 dark:text-yellow-400" />
             <span className="hidden md:block text-sm font-semibold text-gray-500 dark:text-white/50 tracking-wider [writing-mode:vertical-rl] rotate-180">
-              Notes
+              {t('Notes')}
             </span>
             <span className="block md:hidden text-sm font-semibold text-gray-500 dark:text-white/50 pr-1">
-              Notes
+              {t('Notes')}
             </span>
           </motion.button>
         ) : (
@@ -53,8 +55,8 @@ export default function NotesSidebar() {
             <div className="p-5 md:p-6 pb-2 min-w-[280px] md:min-w-[340px]">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Quick Notes</h2>
-                  <p className="text-gray-500 dark:text-white/60 text-sm">Saved locally</p>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{t('Quick Notes')}</h2>
+                  <p className="text-gray-500 dark:text-white/60 text-sm">{t('Saved locally')}</p>
                 </div>
                 <button onClick={() => setNotesOpen(false)} className="text-gray-400 dark:text-white/40 hover:text-gray-900 dark:hover:text-white p-1">
                   <X className="w-5 h-5"/>
@@ -66,7 +68,7 @@ export default function NotesSidebar() {
               <textarea
                 value={noteContent}
                 onChange={(e) => setNoteContent(e.target.value)}
-                placeholder="Write your notes here... (Saves automatically)"
+                placeholder={t('Write your notes here... (Saves automatically)')}
                 className="w-full h-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-xl p-4 resize-none focus:outline-none focus:ring-1 focus:ring-primary/50 text-gray-900 dark:text-white/90 placeholder-gray-400 dark:placeholder-white/30 custom-scrollbar transition-colors"
                 autoFocus
               />

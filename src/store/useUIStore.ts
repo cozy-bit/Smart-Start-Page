@@ -11,6 +11,8 @@ interface UIState {
   setSettingsOpen: (val: boolean) => void;
   dailyFocus: string;
   setDailyFocus: (val: string) => void;
+  isPomodoroOpen: boolean;
+  setPomodoroOpen: (val: boolean) => void;
 }
 
 export const useUIStore = create<UIState>()(
@@ -26,6 +28,8 @@ export const useUIStore = create<UIState>()(
       setSettingsOpen: (val) => set({ isSettingsOpen: val }),
       dailyFocus: '',
       setDailyFocus: (val) => set({ dailyFocus: val }),
+      isPomodoroOpen: false,
+      setPomodoroOpen: (val) => set({ isPomodoroOpen: val }),
     }),
     {
       name: 'smart-start-ui',

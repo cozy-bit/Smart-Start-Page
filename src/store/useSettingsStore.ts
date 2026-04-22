@@ -5,7 +5,14 @@ interface SettingsState {
   enableWeather: boolean;
   enableNotes: boolean;
   enableHistory: boolean;
-  toggleSetting: (key: keyof Omit<SettingsState, 'toggleSetting'>) => void;
+  enableEcoMode: boolean;
+  fontFamily: string;
+  customWallpaper: string;
+  language: 'ru' | 'en';
+  pomodoroTheme: string;
+  pomodoroDigitTheme: string;
+  toggleSetting: (key: keyof Omit<SettingsState, 'toggleSetting' | 'fontFamily' | 'customWallpaper' | 'language' | 'pomodoroTheme' | 'pomodoroDigitTheme'>) => void;
+  setStringSetting: (key: 'fontFamily' | 'customWallpaper' | 'language' | 'pomodoroTheme' | 'pomodoroDigitTheme', value: string) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -14,10 +21,20 @@ export const useSettingsStore = create<SettingsState>()(
       enableWeather: true,
       enableNotes: true,
       enableHistory: true,
+      enableEcoMode: false,
+      fontFamily: 'Inter',
+      customWallpaper: '',
+      language: 'ru',
+      pomodoroTheme: 'Purple Space',
+      pomodoroDigitTheme: 'White',
 
       toggleSetting: (key) =>
         set((state) => ({
-          [key]: !state[key],
+          [key]: !state[key as keyof SettingsState],
+        })),
+      setStringSetting: (key, value) =>
+        set(() => ({
+          [key]: value,
         })),
     }),
     {

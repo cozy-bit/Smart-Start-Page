@@ -2,10 +2,12 @@ import { useState, useRef, useEffect } from 'react';
 import { Target, CheckCircle2, Circle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore } from '../store/useUIStore';
+import { useTranslation } from '../i18n';
 import confetti from 'canvas-confetti';
 
 export default function DailyFocus() {
   const { dailyFocus, setDailyFocus } = useUIStore();
+  const t = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState('');
   const [completed, setCompleted] = useState(false);
@@ -60,7 +62,7 @@ export default function DailyFocus() {
         className="mt-4 md:mt-2 mb-6 group flex items-center justify-center space-x-2 text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white/80 transition-colors mx-auto"
       >
         <Target className="w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity" />
-        <span className="text-sm font-medium tracking-wide">Set your daily focus</span>
+        <span className="text-sm font-medium tracking-wide">{t('Set your daily focus')}</span>
       </motion.button>
     );
   }
@@ -71,7 +73,7 @@ export default function DailyFocus() {
       animate={{ opacity: 1, y: 0 }}
       className="mt-4 md:mt-2 mb-6 flex flex-col items-center justify-center mx-auto max-w-sm w-full relative z-20"
     >
-      <div className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Today</div>
+      <div className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">{t('Today')}</div>
       
       {isEditing ? (
         <div className="w-full relative">
@@ -82,7 +84,7 @@ export default function DailyFocus() {
             onChange={(e) => setTempValue(e.target.value)}
             onKeyDown={handleKeyDown}
             onBlur={handleSave}
-            placeholder="What is your main focus for today?"
+            placeholder={t("What's on your mind?")}
             className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 text-center text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-primary/50"
           />
         </div>
