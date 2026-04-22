@@ -13,12 +13,12 @@ import { Toaster, toast } from 'sonner';
 import { useUserStore } from './store/useUserStore';
 import { useUIStore } from './store/useUIStore';
 import { useSettingsStore } from './store/useSettingsStore';
-import { Palette, Search, FileText, Plus, Settings } from 'lucide-react';
+import { Palette, Plus, Settings } from 'lucide-react';
 
 function App() {
   const theme = useUserStore((s) => s.theme);
   const setTheme = useUserStore((s) => s.setTheme);
-  const { setAddLinkOpen, setNotesOpen, setSettingsOpen } = useUIStore();
+  const { setAddLinkOpen, setSettingsOpen } = useUIStore();
   const { enableWeather, enableNotes } = useSettingsStore();
 
   useEffect(() => {
@@ -49,9 +49,7 @@ function App() {
     toast.success(`Switched to ${nextTheme} mode`);
   };
 
-  const openCommandPalette = () => {
-    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', code: 'KeyK', metaKey: true } as KeyboardEventInit));
-  };
+
 
   return (
     <>
